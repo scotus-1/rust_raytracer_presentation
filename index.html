@@ -22,17 +22,51 @@
 			
 			/* chat gpt generated */
 			.footnote {
-			position: absolute;
-			bottom: -5.0em;            /* Distance from bottom */
-			left: 2em;              /* Distance from left */
-			color: #000;             /* Text color */
-			padding: 6px 10px;       /* Inner spacing */
-			font-size: 18px;         /* Smaller text for footnote */
-			font-style: italic;      /* Make it look like a note */
-			z-index: 1000;           /* Stay above content */
-			max-width: 40%;          /* Prevent text from stretching too far */
+				position: absolute;
+				bottom: -5.0em;            /* Distance from bottom */
+				left: 2em;              /* Distance from left */
+				color: #000;             /* Text color */
+				padding: 6px 10px;       /* Inner spacing */
+				font-size: 18px;         /* Smaller text for footnote */
+				font-style: italic;      /* Make it look like a note */
+				z-index: 1000;           /* Stay above content */
+				max-width: 40%;          /* Prevent text from stretching too far */
 			}
 
+			.caption {
+				color: #000;             /* Text color */
+				font-size: 24px;         /* Smaller text for footnote */
+				font-style: italic;      /* Make it look like a note */
+				z-index: 1000;           /* Stay above content */
+        		/* Prevent text from stretching too far */
+			}
+
+			.caption-small {
+				color: #000;             /* Text color */
+				font-size: 16px;         /* Smaller text for footnote */
+				font-style: italic;      /* Make it look like a note */
+				z-index: 1000;           /* Stay above content */
+          		/* Prevent text from stretching too far */
+			}			
+
+			.container {
+				display: flex; /* Enables flexbox for the container */
+				justify-content: center; 
+				align-items: center;
+			}
+
+			.column {
+				flex: 1; /* Makes each column take up equal available space */
+				padding: 10px;
+
+			}
+
+			.fragment.blur {
+				filter: blur(5px);
+			}
+			.fragment.blur.visible {
+				filter: none;
+			}
 		</style>
 	</head>
 	<body>
@@ -84,7 +118,87 @@
 					<h4 style="font-size: 200%;" data-id="rltext">how do we see reality?</h4>
 				</section>
 
+				<section data-auto-animate>
+					<h4 data-id="rltext">how do we see reality?</h4>
+					<video class="fragement fade-out r-stretch" muted loop data-autoplay src="./assets/light2eye.mp4"></video>
+					<div class="caption">video: "Coding Adventures: Ray Tracing" by Sebastian Lague</div>
+				</section>
 
+				<section data-auto-animate>
+					<h4 data-id="rltext">how do we capture reality?</h4>
+					<video class="fragement fade-out r-stretch" muted loop data-autoplay src="./assets/eye2light.mp4"></video>
+					<div class="caption">video: "Coding Adventures: Ray Tracing" by Sebastian Lague</div>
+				</section>
+
+				<section>
+					<h2>ray tracing</h2>
+					<div class="container">
+						<div class="column">
+							<ul>
+								<li data-fragment-index="0" class="fragment strike">rasterization</li>
+								<li data-fragment-index="0" class="fragment custom blur">ray casting</li>
+								<li data-fragment-index="1" class="fragment custom blur">recursive ray tracing</li>
+								<li data-fragment-index="2" class="fragment custom blur">distributive ray tracing</li>
+							</ul>
+						</div>
+						<div class="column">
+							<div class="r-stack">
+								<div data-fragment-index="0" class="fragment fade-out">
+									<img width="400" height="auto" style="margin: 0;" src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Top-left_triangle_rasterization_rule.gif">
+									<img width="700" height="auto" style="margin: 0;" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Albrecht_durer_ray_tracing_enhanced.png">
+									<div class="caption" style="font-size: 20pt;">from: Wikipedia, "Rasterization", "Ray Tracing" Dürer (c.1532)</div>
+								</div>
+
+								<div data-fragment-index="0" class="fragment current-visible">
+									<img width="400" height="400" style="margin: 0;" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Idealized_universal_joint_generated_by_ray_tracing.jpg">
+									<img width="600" height="auto" style="margin: 0;" src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Simple_raycasting_with_fisheye_correction.gif">
+									<div class="caption" style="margin-left: 14em; max-width: fit-content; text-align: center;">from: Wikipedia, "Ray Casting"</div>
+								</div>
+
+								<div data-fragment-index="1" class="fragment current-visible">
+									<img width="600" height="600" style="margin: 0;" src="https://www.scratchapixel.com/images/ray-tracing-refresher/rt-whitted.png?">
+									<div class="caption" style="max-width: fit-content;">Whitted, 1980</div>
+								</div>		
+								
+								<div data-fragment-index="2" class="fragment">
+									<img width="600" height="600" style="margin: 0;" src="https://upload.wikimedia.org/wikipedia/commons/3/32/Recursive_raytrace_of_a_sphere.png">
+									<div class="caption" style="max-width: fit-content;">from: Wikipedia, "Ray Tracing" (c.2008)</div>
+								</div>								
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section data-auto-animate>
+					<h3>chapter two: the rendering equation</h3>
+					<h4 data-id="rltext">what are we missing?</h4>
+				</section>
+
+				<section data-auto-animate>
+					<h4 data-id="rltext" style="font-size: 150%;">what are we missing?</h4>
+					<p>$L_{\text{o}}(\mathbf x, \omega_{\text{o}}, \lambda, t) = L_{\text{e}}(\mathbf x, \omega_{\text{o}}, \lambda, t) + L_{\text{r}}(\mathbf x, \omega_{\text{o}}, \lambda, t)$ </p>
+				</section>
+
+				<section data-auto-animate>
+					<h4 data-id="rltext" style="font-size: 150%;">what are we missing?</h4>
+					<p>$L_{\text{o}}(\mathbf x, \omega_{\text{o}}, \lambda, t) = L_{\text{e}}(\mathbf x, \omega_{\text{o}}, \lambda, t) + L_{\text{r}}(\mathbf x, \omega_{\text{o}}, \lambda, t)$ </p>
+					<img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Rendering_eq.png">
+					<p data-id="eq">$L_{\text{r}}(\mathbf x, \omega_{\text{o}}, \lambda, t) = \int_\Omega f_{\text{r}}(\mathbf x, \omega_{\text{i}}, \omega_{\text{o}}, \lambda, t) L_{\text{i}}(\mathbf x, \omega_{\text{i}}, \lambda, t) (\omega_{\text{i}}\cdot\mathbf n) \operatorname d \omega_{\text{i}}$</p>
+					<div class="footnote">from: Wikipedia, "Rendering Equation"</div>
+				</section>
+
+				<section data-auto-animate>
+					<h4 data-id="rltext" style="font-size: 150%;">what are we missing?</h4>
+					<p>$L_{\text{o}}(\mathbf x, \omega_{\text{o}}, \lambda, t) = L_{\text{e}}(\mathbf x, \omega_{\text{o}}, \lambda, t) + L_{\text{r}}(\mathbf x, \omega_{\text{o}}, \lambda, t)$ </p>
+					<img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Rendering_eq.png">
+					<p data-id="eq">$L_{\text{r}}(\mathbf x, \omega_{\text{o}}, \lambda, t) = {\Large\color{red} \int_\Omega} f_{\text{r}}(\mathbf x, \omega_{\text{i}}, \omega_{\text{o}}, \lambda, t) L_{\text{i}}(\mathbf x, \omega_{\text{i}}, \lambda, t) (\omega_{\text{i}}\cdot\mathbf n) \operatorname d \omega_{\text{i}}$</p>
+					<div class="footnote">from: Wikipedia, "Rendering Equation"</div>				
+				</section>
+
+				<section data-auto-animate>
+					<h3>chapter three: path tracing</h3>
+					<h4>let's go to the casino!</h4>
+				</section>
 			</div>
 		</div>
 
