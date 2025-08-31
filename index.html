@@ -4,20 +4,87 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>path tracing</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="dist/theme/serif.css">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+		<style>
+			.reveal, .reveal section {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				text-rendering: optimizeLegibility;
+			}
+			
+			/* chat gpt generated */
+			.footnote {
+			position: absolute;
+			bottom: -5.0em;            /* Distance from bottom */
+			left: 2em;              /* Distance from left */
+			color: #000;             /* Text color */
+			padding: 6px 10px;       /* Inner spacing */
+			font-size: 18px;         /* Smaller text for footnote */
+			font-style: italic;      /* Make it look like a note */
+			z-index: 1000;           /* Stay above content */
+			max-width: 40%;          /* Prevent text from stretching too far */
+			}
+
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-auto-animate>
+					<h2>$\vec{p}\text{ath}$ $t\text{racing}$</h2>
+					<h3 data-id="tbox">what do you know about vectors?</h3>
+					<p><small>by titus nguyen</small></p>
+				</section>
+
+				<section data-auto-animate>
+					<h3 data-id="tbox">what do you know about vectors?</h3>
+					<p class="fragment">magnitude and direction</p>
+					<p class="fragment">"refers to quantities that cannot be expressed by a single scalar"</p>
+					<p class="fragment">$ai + bj + ck$ , $&lt;a, b, c&gt;$</a></p>
+					<div class="fragment">					
+						<img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vector_from_A_to_B.svg" style="width: 30%; height: auto;">
+					</div>
+				</section>
+
+				<section data-auto-animate data-transition="none-out">
+					<img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vector_from_A_to_B.svg" style="width:150%; height: auto;">
+				</section>
+
+				<section data-transition="zoom">
+					<h2 class="r-fit-text">RAY</h2>
+				</section>
+
+				<section data-transition="fade" data-auto-animate>
+					<h2>why rays, vectors, points, scalars or...?</h2>
+				</section>
+
+				<section data-transition="fade-out" data-auto-animate="">
+					<h2>why rays, vectors, points, scalars or...?</h2>
+					<span class="">
+						<div class="footnote">ref: "The 6 Shapes of God" by CJ The X"</div>
+						<h1 class="fragment strike">become <span style="color:red;">god</span></h1>
+					</span>
+					<h2 class="fragment">construct an artificial reality out of math</h2>
+				</section>
+
+				<section data-transition="fade" data-auto-animate>
+					<h3>chapter one: the gift of sight & ray tracing</h3>
+					<h4 data-id="rltext">how do we create reality?</h3>
+				</section>
+
+				<section data-auto-animate>
+					<h4 style="font-size: 200%;" data-id="rltext">how do we see reality?</h4>
+				</section>
+
+
 			</div>
 		</div>
 
@@ -25,15 +92,17 @@
 		<script src="plugin/notes/notes.js"></script>
 		<script src="plugin/markdown/markdown.js"></script>
 		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
 		<script>
 			// More info about initialization & config:
 			// - https://revealjs.com/initialization/
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
-
+				width: 1920,
+				height: 1080,
 				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
 			});
 		</script>
 	</body>
