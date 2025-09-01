@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="dist/theme/serif.css">
 
 		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="assets/rose-pine-dawn.css">
 
 		<style>
 			.reveal, .reveal section {
@@ -67,6 +67,19 @@
 			.fragment.blur.visible {
 				filter: none;
 			}
+
+			.img-pixel { 
+				image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+				image-rendering: -moz-crisp-edges;          /* Firefox                        */
+				image-rendering: -o-crisp-edges;            /* Opera                          */
+				image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+				image-rendering: pixelated;                 /* Universal support since 2021   */
+				image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+				-ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+
+			}
+			
+			.pdfobject-container { height: 1080px; margin: 0; padding: 0;}
 		</style>
 	</head>
 	<body>
@@ -156,8 +169,9 @@
 								</div>
 
 								<div data-fragment-index="1" class="fragment current-visible">
-									<img width="600" height="600" style="margin: 0;" src="https://www.scratchapixel.com/images/ray-tracing-refresher/rt-whitted.png?">
-									<div class="caption" style="max-width: fit-content;">Whitted, 1980</div>
+									<img width="400" height="400" style="margin: 0;" src="https://www.scratchapixel.com/images/ray-tracing-refresher/rt-whitted.png?">
+									<img width="600" height="auto" style="margin: 0;" src="https://i.imgur.com/tlhy1hT.jpeg">
+									<div class="caption" style="margin-left: 13em; max-width: fit-content;">Whitted, 1980; Cyberpunk 2077</div>
 								</div>		
 								
 								<div data-fragment-index="2" class="fragment">
@@ -195,18 +209,256 @@
 					<div class="footnote">from: Wikipedia, "Rendering Equation"</div>				
 				</section>
 
-				<section data-auto-animate>
+				<section>
 					<h3>chapter three: path tracing</h3>
-					<h4>let's go to the casino!</h4>
+					<h4>let's go gambling!</h4>
+				</section>
+				
+				<section data-auto-animate>
+					<h3>the monte carlo method</h3>
+					<img class="stretch" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Pi_monte_carlo_all.gif/800px-Pi_monte_carlo_all.gif">
+					<p><small>from: Wikipedia, "Monte Carlo method"</small></p>
+				</section>
+
+				<section data-auto-animate>
+					<div class="container">
+						<div class="column">
+							<video mute loop data-autoplay src="./assets/blender_render.mp4"></video>
+							<div class="caption">Blender Classroom rendered using Cycles</div>
+						</div>
+						<div class="column">
+							<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Pi_monte_carlo_all.gif/800px-Pi_monte_carlo_all.gif">
+						</div>						
+					</div>
+				</section>
+				
+				<section>
+					<div class="container">
+						<div class="column">
+							<div id="hyperion-pdf"></div>
+						</div>
+						<div class="column">
+							<div id="arnold-pdf"></div>
+						</div>			
+						<div class="column">
+							<div id="renderman-pdf"></div>
+						</div>					
+					</div>
+				</section>
+
+				<section>
+					<h3>chapter four: let us begin</h3>
+				</section>
+
+				<section>
+					<h3>thank you!</h3>
+					<img src="https://raytracing.github.io/images/cover/CoverRTW1-small.jpg">
+					<img style="width: 400px; height: auto; margin-bottom: 4em; margin-left: 1em;" src="https://rustacean.net/assets/cuddlyferris.svg">
+				</section>
+
+				<section data-auto-animate>
+					<h2>the camera</h2>
+					<div class="container">
+						<div class="column">
+							<img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/RaysViewportSchema.png">
+							<div class="caption">from: Wikipedia, "Ray Tracing"</div>
+						</div>
+						<div class="column">
+							<img src="https://raytracing.github.io/images/fig-1.04-pixel-grid.jpg">
+							<div class="caption">from Ray Tracing in One Weekend</div>
+						</div>			
+					</div>
+				</section>
+				
+
+				<section data-auto-animate>
+					<div class="container">
+						<div class="column">
+							<pre style="height: 775px;"><code data-trim data-noescape class="language-rust">
+    fn init(&mut self) {
+        // const image_height: u32 = if image_width < 1 {1} else {image_height};
+        // image width & height are rounded to integers for pixel values
+        self.image_height = (self.image_width as f32/self.aspect_ratio) as u32;
+
+        // viewport properties
+        self.focal_length = (self.center - self.look_at_point).length();
+        let theta = degs_to_rads(self.vfov as f32);
+        let h = (theta / 2.0).tan();
+        let viewport_height = 2.0 * h * self.focal_length;
+        let viewport_width: f32 = viewport_height * (self.image_width as f32 / self.image_height as f32);
+
+        // calculate basis vectors
+        self.w = Dir3::new(self.center - self.look_at_point).unwrap();
+        self.u = Dir3::new(self.vup.cross(self.w.as_vec3())).unwrap();
+        self.v = Dir3::new(self.w.cross(self.u.as_vec3())).unwrap();
+        
+        // viewport vectors and delta vectors, basically from (0,0) to whatever +u,+v
+        let viewport_u: Vec3 = viewport_width * self.u;
+        let viewport_v: Vec3 = viewport_height * -self.v;
+        self.pixel_delta_u = viewport_u / self.image_width as f32;
+        self.pixel_delta_v = viewport_v / self.image_height as f32;
+        
+        // note: foward is in the -z direction, which is why the focal length vec is subbed from cam_center
+        let viewport_upper_left = self.center - (self.focal_length * self.w) - viewport_u/2.0 - viewport_v/2.0;
+        self.pixel00_loc = viewport_upper_left + 0.5*(self.pixel_delta_u + self.pixel_delta_v);
+
+    }
+							</code></pre>
+
+						</div>
+						<div class="column">
+							<div class="r-stack">
+								<img class="" src="https://raytracing.github.io/images/fig-1.04-pixel-grid.jpg">	
+								<img class="fragment" src="https://raytracing.github.io/images/fig-1.18-cam-view-geom.jpg">							
+								<img class="fragment" src="https://raytracing.github.io/images/fig-1.19-cam-view-dir.jpg">
+
+							</div>
+							<div class="caption">from Ray Tracing in One Weekend</div>
+							
+						</div>			
+					</div>
+				</section>
+
+				<section data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<p>blendedValue = (1-a) ⋅ posY + a ⋅ posY</p>
+					<pre style="width: fit-content;"><code data-trim data-noescape class="language-rust">
+fn render(&mut self) {
+	for row in 1..image_height {
+        for pixel in 1..image_width {
+						let pixel_center = pixel00_loc + (row * pixel_delta_u) + (pixel * pixel_delta_v);
+						let ray_direction = pixel_center - camera_center;
+						let ray = Ray3d::new(camera_center, ray_direction.normalize().unwrap())
+
+						let t = 0.5*(ray.direction.y() + 1.0);
+						let pixel_color = (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+						write_color(&mut out_handle, pixel_color);
+        }
+    }
+}
+					</code></pre>					
+				</section>
+				
+				<section data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<h3>chapter five: rays and spheres</h3>
+				</section>
+
+				<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<h3>what is a sphere?</h3>
+				</section>
+				<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<h3>what is a sphere?</h3>
+					<h3>$x^2 + y^2 + z^2 = r^2$</h3>
+				</section>
+				<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<h3>what is a sphere?</h3>
+					<p class="fragment">$(C_x - x)^2 + (C_y - y)^2 + (C_z - z)^2 = r^2$</p>
+					<p class="fragment">$(\mathbf{C} - \mathbf{P}) \cdot (\mathbf{C} - \mathbf{P}) = r^2$</p>
+					<h3 class="fragment">rays &lt;3 spheres</h3>
+					<p class="fragment">$\mathbf{P}(t) = \mathbf{Q} + t\mathbf{d}$</p>
+					<p class="fragment">$(\mathbf{C} - \mathbf{P}(t)) \cdot (\mathbf{C} - \mathbf{P}(t)) = r^2$</p>
+					<p class="fragment">$(-t \mathbf{d} + (\mathbf{C} - \mathbf{Q})) \cdot (-t \mathbf{d} + (\mathbf{C} - \mathbf{Q})= r^2$</p>
+					<p class="fragment">$t^2 \mathbf{d} \cdot \mathbf{d}- 2t \mathbf{d} \cdot (\mathbf{C} - \mathbf{Q})+ (\mathbf{C} - \mathbf{Q}) \cdot (\mathbf{C} - \mathbf{Q}) = r^2$</p>
+					<p class="fragment">$t^2 \mathbf{d} \cdot \mathbf{d}- 2t \mathbf{d} \cdot (\mathbf{C} - \mathbf{Q})+ (\mathbf{C} - \mathbf{Q}) \cdot (\mathbf{C} - \mathbf{Q}) - r^2 = 0$</p>
+				</section>
+
+				<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<h3>rays &lt;3 spheres</h3>
+					<p>$t^2 \mathbf{d} \cdot \mathbf{d}- 2t \mathbf{d} \cdot (\mathbf{C} - \mathbf{Q})+ (\mathbf{C} - \mathbf{Q}) \cdot (\mathbf{C} - \mathbf{Q}) - r^2 = 0$</p>
+					<p>$a = \mathbf{d} \cdot \mathbf{d}$</p>
+					<p>$b = -2 \mathbf{d} \cdot (\mathbf{C} - \mathbf{Q})$</p>
+					<p>$c = (\mathbf{C} - \mathbf{Q}) \cdot (\mathbf{C} - \mathbf{Q}) - r^2$</p>
+				</section>
+
+				<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.02-blue-to-white.png">
+					<div>
+						<h3>rays &lt;3 spheres</h3>
+						<p>$a = \mathbf{d} \cdot \mathbf{d}$</p>
+						<p>$b = -2 \mathbf{d} \cdot (\mathbf{C} - \mathbf{Q})$</p>
+						<p>$c = (\mathbf{C} - \mathbf{Q}) \cdot (\mathbf{C} - \mathbf{Q}) - r^2$</p>
+					</div>
+					<div class="container">
+						<div class="column">
+							<img style="height: 400px;" src="https://raytracing.github.io/images/fig-1.05-ray-sphere.jpg">
+						</div>
+						<div class="column">
+							<pre style="width: fit-content;"><code data-trim data-noescape class="language-rust">
+fn hit_sphere(center: Point3d, radius: f32, r: &Ray3d) -> bool {
+    let oc = center - r.origin();
+    let a = r.direction().dot(r.direction());
+    let b = -2.0 * r.direction().dot(oc);
+    let c = oc.dot(oc) - radius*radius;
+    let discriminant = b*b - 4*a*c;
+    return (discriminant >= 0);
+}
+					</code></pre>		
+						</div>
+					</div>
+				</section>
+
+				<section class="img-pixel" data-background-image="https://raytracing.github.io/images/img-1.03-red-sphere.png">
+					<pre style="width: fit-content;"><code data-trim data-noescape class="language-rust">
+fn ray_color(r: &Ray3d) -> Color {
+    if hit_sphere(point3(0,0,-1), 0.5, r) {
+        return color(1, 0, 0);
+	  }
+
+		let t = 0.5*(r.direction.y() + 1.0);
+		let pixel_color = (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+		write_color(&mut out_handle, pixel_color);
+}
+					</code></pre>
+				</section>
+
+				<section class="img-pixel" data-background-image="https://raytracing.github.io/images/img-1.03-red-sphere.png"></section>
+
+				<section data-transition="transition" data-auto-animate class="img-pixel" data-background-image="https://raytracing.github.io/images/img-1.03-red-sphere.png">
+					<h3>chapter 6: normals?</h3>
+				</section>
+
+				<section data-auto-animate class="img-pixel" data-background-image="https://raytracing.github.io/images/img-1.03-red-sphere.png">
+					<h3>chapter 6: normals?</h3>
+					
+					<div class="container">
+						<div class="column">
+							<img src="https://raytracing.github.io/images/fig-1.06-sphere-normal.jpg">
+						</div>
+						<div class="column">
+							<pre style="width: fit-content; height: 22em;"><code data-trim data-noescape class="language-rust" data-line-numbers="3-8,12-16">
+fn ray_color(r: &Ray3d) {
+	  let t = hit_sphere(point3(0,0,-1), 0.5, r);
+    if t > 0.0 {
+        let n=N = r.at(t) - vec3(0,0,-1);
+		    return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+	  }
+    ...
+}
+
+fn hit_sphere(center: Point3d, radius: f32, r: &Ray3d) -> f32 {
+    ...
+    let discriminant = b*b - 4*a*c;
+	  if discriminant < 0 {
+		  return -1.0;
+	  } else {
+          return (discriminant >= 0);
+	  }
+}
+					</code></pre>
+						</div>						
+					</div>
+				</section>
+
+				<section class="img-pixel" data-background-image="https://raytracing.github.io/images/img-1.04-normals-sphere.png">
+
 				</section>
 			</div>
 		</div>
 
 		<script src="dist/reveal.js"></script>
 		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
 		<script src="plugin/highlight/highlight.js"></script>
 		<script src="plugin/math/math.js"></script>
+		<script src="plugin/zoom/zoom.js"></script>
+		<script src="https://unpkg.com/pdfobject"></script>
 		<script>
 			// More info about initialization & config:
 			// - https://revealjs.com/initialization/
@@ -216,8 +468,16 @@
 				width: 1920,
 				height: 1080,
 				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+				plugins: [ RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealZoom]
 			});
+			
+			let options = {
+				pdfOpenParams: {pagemode: "none"}
+			}
+			PDFObject.embed("./assets/arnold.pdf", "#arnold-pdf", options);
+			PDFObject.embed("./assets/hyperion.pdf", "#hyperion-pdf", options);
+			PDFObject.embed("./assets/renderman.pdf", "#renderman-pdf", options);
+
 		</script>
 	</body>
 </html>
