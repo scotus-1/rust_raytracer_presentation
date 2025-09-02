@@ -873,14 +873,233 @@ impl Material for MetalMaterial {
 				<section data-auto-animate data-background-image="assets/image-1920-fuzzrefl.png">
 					<h2 style="color: rgb(240, 241, 235);">recall</h2>
 					<img src="https://raytracing.github.io/images/fig-1.17-refraction.jpg">
-				</section>			
+				</section>	
+				<section style="color: rgb(240, 241, 235);" data-auto-animate data-background-image="assets/image-1920-fuzzrefl.png">
+					<h2 >recall</h2>
+					<img src="https://raytracing.github.io/images/fig-1.17-refraction.jpg">
+					<p>$\mathbf{R'} = \mathbf{R'}_{\bot} + \mathbf{R'}_{\parallel}$</p>
+					<p>$\mathbf{R'}_{\bot} = \frac{\eta}{\eta'} (\mathbf{R} + |\mathbf{R}| \cos(\theta) \mathbf{n})  = \frac{\eta}{\eta'} (\mathbf{R} + (\mathbf{-R} \cdot \mathbf{n}) \mathbf{n})$</p>
+					<p>$\mathbf{R'}_{\parallel} = -\sqrt{1 - |\mathbf{R'}_{\bot}|^2} \mathbf{n}$</p>
+				</section>
+
+				<section data-auto-animate style="color: rgb(240, 241, 235);" data-background-image="assets/image-1920-fuzzrefl.png">
+					<h2 style="color: rgb(240, 241, 235);"> also recall</h2>
+					<img src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-shallowandsteep.jpg">
+					<img style="margin-bottom: -30px;"src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-animation-1.gif">
+				</section>	
+
+				<section data-auto-animate style="color: rgb(240, 241, 235);" data-background-image="assets/image-1920-fuzzrefl.png">
+					<h2> also recall</h2>
+					<img src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-shallowandsteep.jpg">
+					<img style="margin-bottom: -30px;"src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-animation-1.gif">
+					<p style="margin-top: 30px;">$  R_\mathrm{s} = \left|\frac{n_1 \cos \theta_\mathrm{i} - n_2 \cos \theta_\mathrm{t}}{n_1 \cos \theta_\mathrm{i} + n_2 \cos \theta_\mathrm{t}}\right|^2
+               = \left|\frac
+                         {n_1 \cos \theta_{\mathrm{i}} - n_2 \sqrt{1 - \left(\frac{n_1}{n_2} \sin \theta_{\mathrm{i}}\right)^2}}
+                         {n_1 \cos \theta_{\mathrm{i}} + n_2 \sqrt{1 - \left(\frac{n_1}{n_2} \sin \theta_{\mathrm{i}}\right)^2}}
+                 \right|^2\!,$</p>
+					<p>$R_\mathrm{p} = \left|\frac{n_1 \cos \theta_\mathrm{t} - n_2 \cos \theta_\mathrm{i}}{n_1 \cos \theta_\mathrm{t} + n_2 \cos \theta_\mathrm{i}}\right|^2
+               = \left|\frac
+                         {n_1 \sqrt{1 - \left(\frac{n_1}{n_2} \sin \theta_\mathrm{i}\right)^2} - n_2 \cos \theta_\mathrm{i}}
+                         {n_1 \sqrt{1 - \left(\frac{n_1}{n_2} \sin \theta_\mathrm{i}\right)^2} + n_2 \cos \theta_\mathrm{i}}
+                 \right|^2\!.$</p>
+				</section>
+
+				<section data-auto-animate style="color: rgb(240, 241, 235);" data-background-image="assets/image-1920-fuzzrefl.png">
+					<h2 style="color: rgb(240, 241, 235);"> also recall</h2>
+					<img src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-shallowandsteep.jpg">
+					<img style="margin-bottom: -30px;"src="https://www.dorian-iten.com/wp-content/uploads/2017/02/fresnel-animation-1.gif">
+					<p style="margin-top: 30px;">$ R(\theta) = R_0 + (1 - R_0)(1 - \cos \theta)^5$ </p>
+				</section>
+
+				<section style="color: rgb(240, 241, 235);" data-auto-animate data-background-image="assets/image-1920-fuzzrefl.png">
+					<pre data-id="code-animation"style="width: fit-content; height: 175px;"><code data-trim data-noescape class="language-rust">
+pub fn refract_vec3(v: &Vec3, n: &Vec3, etai_div_etat: f32) -> Vec3 {
+    let cos_theta = -v.dot(*n).min(1.0);
+    let r_out_perp = etai_div_etat * (v + cos_theta*n);
+    let r_out_parallel = -sqrt(abs(1.0 - r_out_perp.length_squared())) * n;
+    r_out_parallel + r_out_perp
+}
+					</code></pre>
+				</section>	
+
+				<section data-background-image="assets/image-1920-refract.png"></section>
 			
+				<section data-auto-animate style="color: rgb(240, 241, 235);" data-background-image="assets/image-1920-refract.png">
+					<h2 style="color: rgb(240, 241, 235);">also also recall</h2>
+					<p style="margin-top: 30px;">$\frac{1.5}{1.0} \cdot \sin\theta \rlap{\kern.45em$|$}> 1.0$</p>
+					<p>$\sin\theta  = \sqrt{1 - \cos^2\theta}$</p>
+					<p>$\cos\theta = \mathbf{R} \cdot \mathbf{n}$</p>
+				</section>	
+
+				<section style="color: rgb(240, 241, 235);" data-auto-animate data-background-image="assets/image-1920-refract.png">
+					<pre data-id="code-animation"style="width: fit-content; height: 750px;"><code data-trim data-noescape data-line-numbers="*|4,7-11|4,7-8,22-28|12,15" class="language-rust">
+impl Material for DielectricMaterial {
+    fn scatter(&self, ray_in: &Vec3, rec: &HitRecord) -> Option&lt;(Color, Ray3d)&gt; {
+        let attenuation = Color::new(1.0,1.0,1.0);
+        let ri_correct = if rec.front_face {1.0 / self.refraction_index} else {self.refraction_index};
+        
+        let ray_normalized = ray_in.normalize();
+        let cos_theta = -ray_normalized.dot(*rec.normal).min(1.0);
+        let sin_theta = sqrt(1.0 - cos_theta*cos_theta);
+        let cannot_refract = ri_correct * sin_theta > 1.0;
+
+        if cannot_refract || Self::reflectance(cos_theta, ri_correct) > random_f32() {
+            let reflected_ray = reflect_vec3(&ray_normalized, &rec.normal);
+            return Some((attenuation, Ray3d::new(rec.p,Dir3::new(reflected_ray).unwrap())));
+        } else {
+            let refracted_ray = refract_vec3(&ray_normalized, &rec.normal, ri_correct);
+            return Some((attenuation, Ray3d::new(rec.p,Dir3::new(refracted_ray).unwrap())));
+        }
+
+    }
+}
+
+fn reflectance(cosine: f32, ri: f32) -> f32 {
+	// schlick/fresnel
+	let r0 = (1.0 - ri) / (1.0 + ri);
+	let r0 = r0*r0;
+
+	r0 + (1.0-r0) * (1.0 - cosine).powi(5)
+}
+					</code></pre>
+				</section>	
+							<section style="color: rgb(240, 241, 235);" data-background-image="assets/image-1920-refract.png">
+					<pre style="width: fit-content; height: 325px;"><code data-trim data-noescape data-line-numbers="" class="language-rust">
+    let mut world: HittableList = HittableList::hittable_list(None);
+    let mat_ground: Rc&lt;LambertianMaterial&gt; = Rc::new(LambertianMaterial{albedo: Color::new(0.8, 0.8, 0.0)});
+    let mat_center: Rc&lt;LambertianMaterial&gt; = Rc::new(LambertianMaterial{albedo: Color::new(0.1, 0.2, 0.5)});
+    let mat_left: Rc&lt;DielectricMaterial&gt; = Rc::new(DielectricMaterial::new(1.50));
+    let mat_bubble: Rc&lt;DielectricMaterial&gt; = Rc::new(DielectricMaterial::new(1.00/1.50));
+    let mat_right: Rc&lt;MetalMaterial&gt; = Rc::new(MetalMaterial::new(Color::new(0.8, 0.6, 0.2), 1.0 ));
+
+    world.add(Rc::new(sphere(Point3::new(0.0, 0.0, -1.2), 0.5, mat_center)));
+    world.add(Rc::new(sphere(Point3::new(0.0, -100.5, -1.0), 100.0, mat_ground)));
+    world.add(Rc::new(sphere(Point3::new(-1.0, 0.0, -1.0), 0.5, mat_left)));
+    world.add(Rc::new(sphere(Point3::new(-1.0, 0.0, -1.0), 0.4, mat_bubble)));
+    world.add(Rc::new(sphere(Point3::new(1.0, 0.0, -1.0), 0.5, mat_right)));
+					</code></pre>
+				</section>
+
+			<section data-background-image="assets/image-1920-refractbubble.png"></section>
 			
-			
-			
-			
-			
-			
+			<section data-auto-animate data-background-image="https://raytracing.github.io/images/img-1.23-book1-final.jpg">
+				<div data-id="box" style="height: 200px; background: rgba(240, 241, 235, 90%); ">				
+					<h3 style="position: relative; top: 50px;"> to be continued...</h3>
+				</div>
+			</section>
+
+			<section data-auto-animate>
+				<div data-id="box" style="height: 1080px; width: 1920px; background: rgb(240, 241, 235); ">				
+				</div>
+			</section>
+
+			<section data-auto-animate>
+				<h2>what's next?</h2>
+			</section>
+			<section data-auto-animate>
+				<h2>what's next?</h2>
+				<ul>
+					<li>depth of field</li>
+					<li>motion blur</li>
+					<li>bounding volume hierarchies</li>
+					<li>texture maps</li>
+					<li>ray-quadrilateral intersections</li>
+					<li>light sources!</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>thank you!</h2>
+			</section>
+
+			<section>
+				<h4>this presentation was made with (all open source software!):</h4>
+				<div class="container">
+					<div class="column">
+						<img style="width: 300px; height: auto;" src="https://www.rust-lang.org/static/images/rust-logo-blk.svg">
+					</div>
+					<div class="column">
+						<img style="width: 300px; height: auto;" src="https://revealjs.com/images/logo/reveal-black-text.svg">
+					</div>
+					<div class="column">
+						<img style="width: 300px; height: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/2023_Obsidian_logo.svg/1024px-2023_Obsidian_logo.svg.png">
+					</div>		
+					<div class="column">
+						<img style="width: 300px; height: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/LaTeX_logo.svg/1280px-LaTeX_logo.svg.png">
+					</div>		
+					<div class="column">
+						<img style="width: 300px; height: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Blender_logo_no_text.svg/768px-Blender_logo_no_text.svg.png?20210507122249">
+					</div>		
+					<div class="column">
+						<img style="width: 300px; height: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/The_GIMP_icon_-_gnome.svg/1200px-The_GIMP_icon_-_gnome.svg.png">
+					</div>			
+				</div>
+			</section>
+
+			<section>
+				<h3>further reading & references:</h3>
+				<pre style="height: 700px;"><code data-trim>Wikipedia articles:
+https://en.wikipedia.org/wiki/Rasterisation
+https://en.wikipedia.org/wiki/Ray_casting
+https://en.wikipedia.org/wiki/Ray_tracing_(graphics)#Recursive_ray_tracing_algorithm
+https://en.wikipedia.org/wiki/Distributed_ray_tracing
+https://en.wikipedia.org/wiki/Ray_tracing_(graphics)
+https://en.wikipedia.org/wiki/Rendering_equation
+https://en.wikipedia.org/wiki/Monte_Carlo_method
+
+Books:
+https://www.realtimerendering.com/raytracing/An-Introduction-to-Ray-Tracing-The-Morgan-Kaufmann-Series-in-Computer-Graphics-.pdf
+https://raytracing.github.io/books/RayTracingInOneWeekend.html
+https://link.springer.com/book/10.1007/978-1-4842-4427-2
+https://www.realtimerendering.com/intersections.html
+https://www.realtimerendering.com/index.html
+
+Articles:
+https://research.nvidia.com/publication/2010-06_real-time-stochastic-rasterization-conventional-gpu-architectures
+https://www.ilm.com/andor-star-wars-ilm-tj-falls-mohen-leo-interview-part-two/
+https://www.cgw.com/documents/pdfs/Toy-Story1rLoRez.pdf
+https://c0de517e.blogspot.com/2020/12/hallucinations-re-rendering-of.html
+https://zhangdoa.com/rendering-analysis-cyberpunk-2077
+
+Showcases:
+https://renderman.pixar.com/stories/the-world-of-coco
+https://renderman.pixar.com/stories/renderman-at-dexter
+https://renderman.pixar.com/stories/cars-3
+https://www.cycles-renderer.org/
+https://dev.epicgames.com/documentation/en-us/unreal-engine/path-tracer-in-unreal-engine
+https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-global-illumination-and-reflections-in-unreal-engine
+https://www.youtube.com/watch?v=6W_HL3nULMM
+https://www.youtube.com/watch?v=vCckxCitIC0
+https://www.amazon.com/dp/B0FDKBM53C
+https://animallogic.com/portfolio/projects/tlm/
+https://animallogic.com/technology/products/glimpse/
+
+Journal Articles & Papers:
+https://graphics.pixar.com/library/
+https://www.cse.chalmers.se/edu/year/2011/course/TDA361/2007/rend_eq.pdf
+https://media.disneyanimation.com/uploads/production/publication_asset/177/asset/a.pdf
+https://fpsunflower.github.io/ckulla/data/2018_tog_spi_arnold.pdf
+https://graphics.pixar.com/library/RendermanTog2018/paper.pdf
+
+https://graphics.pixar.com/library/PathTracedMovies/paper.pdf
+https://graphics.pixar.com/library/RMan2003/paper.pdf
+https://graphics.pixar.com/library/ReflectanceModel/paper.pdf
+https://graphics.pixar.com/library/DistributedRayTracing/paper.pdf
+https://graphics.pixar.com/library/RayTracingCars/paper.pdf
+https://graphics.pixar.com/library/TailoringForRatatouille/paper.pdf
+https://graphics.pixar.com/library/500MillionHairs/paper.pdf
+https://graphics.pixar.com/library/AnyoneCanCook/paper.pdf
+https://graphics.pixar.com/library/PhysicallyBasedLighting/paper.pdf
+https://media.disneyanimation.com/uploads/production/publication_asset/48/asset/s2012_pbs_disney_brdf_notes_v3.pdf
+
+https://www.researchgate.net/publication/244986797_A_Pixel_Is_Not_A_Little_Square_A_Pixel_Is_Not_A_Little_Square_A_Pixel_Is_Not_A_Little_Square
+
+Videos:
+https://www.youtube.com/watch?v=s-9UHZFBH08
+https://www.youtube.com/watch?v=KkOkx0FiHDA
+https://www.youtube.com/watch?v=iOlehM5kNSk
+https://www.youtube.com/watch?v=C8YtdC8mxTU</code></pre>
+			</section>
 			
 			
 			</div>
